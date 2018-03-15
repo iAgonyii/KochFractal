@@ -4,7 +4,6 @@
  */
 package calculate;
 
-import java.util.Observable;
 import javafx.scene.paint.Color;
 
 /**
