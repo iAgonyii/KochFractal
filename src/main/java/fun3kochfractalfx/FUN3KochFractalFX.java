@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package fun3kochfractalfx;
 
 import calculate.*;
@@ -15,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -23,6 +20,7 @@ import javafx.stage.Stage;
 /**
  *
  * @author Nico Kuijpers
+ * Modified for FUN3 by Gertjan Schouten
  */
 public class FUN3KochFractalFX extends Application {
     
@@ -55,7 +53,12 @@ public class FUN3KochFractalFX extends Application {
     private Canvas kochPanel;
     private final int kpWidth = 500;
     private final int kpHeight = 500;
-    
+
+    // counter for snapshot and its threshold (fixes rendering issue)
+    private int counter = 0;
+    private static final int THRESHOLD = 800_000;
+    private final WritableImage image = new WritableImage(kpWidth, kpHeight);
+
     @Override
     public void start(Stage primaryStage) {
        
@@ -176,6 +179,7 @@ public class FUN3KochFractalFX extends Application {
         gc.clearRect(0.0,0.0,kpWidth,kpHeight);
         gc.setFill(Color.BLACK);
         gc.fillRect(0.0,0.0,kpWidth,kpHeight);
+        counter = 0;
     }
     
     public void drawEdge(Edge e) {
@@ -201,6 +205,12 @@ public class FUN3KochFractalFX extends Application {
         
         // Draw line
         gc.strokeLine(e1.X1,e1.Y1,e1.X2,e1.Y2);
+
+        counter++;
+        if (counter>=THRESHOLD) {
+            kochPanel.snapshot(null,image);
+            counter = 0;
+        }
     }
     
     public void setTextNrEdges(String text) {
