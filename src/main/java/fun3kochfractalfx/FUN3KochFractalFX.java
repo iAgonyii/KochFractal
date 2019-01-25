@@ -56,7 +56,7 @@ public class FUN3KochFractalFX extends Application {
 
     // counter for snapshot and its threshold (fixes rendering issue)
     private int counter = 0;
-    private static final int THRESHOLD = 800_000;
+    private static final int THRESHOLD = 200_000;
     private final WritableImage image = new WritableImage(kpWidth, kpHeight);
 
     @Override
