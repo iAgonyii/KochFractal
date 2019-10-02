@@ -9,6 +9,9 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
+        <codeVersion>11</codeVersion>
+        <openfxVersion>12</openfxVersion>
+        <mavenVersion>3.8.1</mavenVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -17,7 +20,7 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>12</version>
+            <version>${openfxVersion}</version>
         </dependency>
     </dependencies>
 
@@ -26,10 +29,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>${mavenVersion}</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <release>${codeVersion}</release>
+                    <source>${codeVersion}</source>
+                    <target>${codeVersion}</target>
                 </configuration>
             </plugin>
         </plugins>
