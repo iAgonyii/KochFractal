@@ -1,0 +1,11 @@
+Vraag 1
+
+Calculating tijden voor level 8, 9 en 10:
+
+4ms, 15ms, 78ms    avg = 32.33
+3ms, 78ms, 73ms    avg = 51.33
+5ms, 15ms, 78ms    avg = 32.66
+4ms, 14ms, 76ms    avg = 31.33
+
+
+
