@@ -7,5 +7,24 @@ Calculating tijden voor level 8, 9 en 10:
 5ms, 15ms, 78ms    avg = 32.66
 4ms, 14ms, 76ms    avg = 31.33
 
+Vraag 3
+
+In sommige gevallen krijg ik alleen een nullpointer exception. Een verklaring hiervoor kan zijn
+dat er een desync is of dat er niet lang genoeg gewacht wordt voordat de edges getekend
+worden.
+
+
+Vraag 4
+
+Calculating tijden voor level 8, 9 en 10:
+
+5ms, 17ms, 101ms  avg = 41.00
+5ms, 17ms, 76ms   avg = 32.66
+5ms, 21ms, 65ms   avg = 30.33
+
+De tijden lijken misschien niet heel veel sneller, maar vraag 4 (met multithreading) is gedaan
+op een andere tragere PC. Relatief gezien met de andere PC bij vraag 1, zijn de tijden dus wel beter.
+Dit komt omdat we nu in plaats van 1 thread, met 3 threads de edges berekenen. Je doet dus eigenlijk
+3 berekeningen tegelijk waardoor de tijden sneller zijn.
 
 
