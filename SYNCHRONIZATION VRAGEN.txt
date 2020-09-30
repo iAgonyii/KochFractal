@@ -1,0 +1,28 @@
+Vraag 1
+
+In de KochFractal klasse heb ik de edge generation methodes synchronized gemaakt. Hierdoor kunnen deze
+methodes maar door één thread tegelijk worden aangeroepen. Bij elk nieuw niveau heb ik dus nu
+3 threads die elk één methode aanroept. Ook wacht ik voordat alle methodes klaar zijn en vervolgens 
+teken ik pas de edges. Hierdoor zijn alle problemen opgelost, inclusief het kleuren probleem.
+
+Vraag 2
+
+Zie vraag 1.
+
+Vraag 4
+
+Bij een deadlock zijn er 2+ threads die continu blokkeren omdat ze op elkaar moeten wachten.
+Dit kan bijvoorbeeld voorkomen wanneer Thread 1 of Thread 2 wacht, maar Thread 2 wacht ook op thread 1.
+
+Vraag 5
+
+Bij livelock blokkeren de threads elkaar niet. Wel lopen de threads eindeloos door. Dit komt bijvoorbeeld voor
+wanneer Thread 1 iets doet met data van Thread 2 en Thread 2 doet iets met data van Thread 1. Zo gaan zo eindeloos door.
+Je kan dit vergelijken met een stackoverflow exception waarbij klasse A klasse B heeft en B heeft A.
+
+Vraag 6
+
+
+Starvation is wanneer een thread geen toegang krijgt tot een shared resource waardoor de thread niet verder kan met zijn taken.
+Dit kan bijvoorbeeld voorkomen wanneer Thread 1 constant bezig is met een resource terwijl Thread 2 ook toegang moet krijgen tot deze resource.
+Maar door synchronization kan er maar 1 Thread bezig zijn met de resource en daarom krijgt Thread 2 eigenlijk nooit toegang tot die resource.
