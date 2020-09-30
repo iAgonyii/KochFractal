@@ -5,6 +5,12 @@
 package calculate;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 import fun3kochfractalfx.FUN3KochFractalFX;
 import timeutil.TimeStamp;
 
@@ -34,13 +40,28 @@ public class KochManager {
         koch.setLevel(nxt);
         tsCalc.init();
         tsCalc.setBegin("Begin calculating");
-        koch.generateLeftEdge();
-        koch.generateBottomEdge();
-        koch.generateRightEdge();
-        tsCalc.setEnd("End calculating");
-        application.setTextNrEdges("" + koch.getNrOfEdges());
-        application.setTextCalc(tsCalc.toString());
-        drawEdges();
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        List<RunnableThread> callables = new ArrayList<>();
+
+        for (int i = 1; i < 4; i++) {
+            callables.add(new RunnableThread(EdgeEnum.values()[i - 1], koch, this));
+        }
+
+        try {
+            List<Future<Long>> resultList = executorService.invokeAll(callables);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            tsCalc.setEnd("End calculating");
+            application.setTextNrEdges("" + koch.getNrOfEdges());
+            application.setTextCalc(tsCalc.toString());
+            drawEdges();
+            executorService.shutdown();
+        }
+
+//        koch.generateLeftEdge();
+//        koch.generateBottomEdge();
+//        koch.generateRightEdge();
     }
     
     public void drawEdges() {
