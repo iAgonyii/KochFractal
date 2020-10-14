@@ -6,10 +6,7 @@ package calculate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 import fun3kochfractalfx.FUN3KochFractalFX;
 import timeutil.TimeStamp;
@@ -29,7 +26,7 @@ public class KochManager {
     
     public KochManager(FUN3KochFractalFX application) {
         this.edges = new ArrayList<Edge>();
-        this.koch = new KochFractal(this);
+        this.koch = new KochFractal();
         this.application = application;
         this.tsCalc = new TimeStamp();
         this.tsDraw = new TimeStamp();
@@ -44,18 +41,26 @@ public class KochManager {
         List<RunnableThread> callables = new ArrayList<>();
 
         for (int i = 1; i < 4; i++) {
-            callables.add(new RunnableThread(EdgeEnum.values()[i - 1], koch, this));
+            callables.add(new RunnableThread(EdgeEnum.values()[i - 1], koch));
         }
 
+        List<Future<List<Edge>>> resultList = null;
         try {
-            List<Future<Long>> resultList = executorService.invokeAll(callables);
+            resultList = executorService.invokeAll(callables);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             tsCalc.setEnd("End calculating");
             application.setTextNrEdges("" + koch.getNrOfEdges());
             application.setTextCalc(tsCalc.toString());
-            drawEdges();
+            try {
+                this.edges = (ArrayList<Edge>) resultList.get(0).get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            application.requestDrawEdges();
             executorService.shutdown();
         }
 

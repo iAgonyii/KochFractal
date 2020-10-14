@@ -1,5 +1,8 @@
 package calculate;
 
+import javafx.concurrent.Task;
+
+import java.util.List;
 import java.util.concurrent.Callable;
 
 enum EdgeEnum {
@@ -8,20 +11,18 @@ enum EdgeEnum {
     LEFT
 }
 
-public class RunnableThread implements Callable<Long> {
+public class RunnableThread implements Callable<List<Edge>> {
 
     private EdgeEnum edge;
     private KochFractal koch;
-    private KochManager manager;
 
-    public RunnableThread(EdgeEnum edge, KochFractal koch, KochManager manager) {
+    public RunnableThread(EdgeEnum edge, KochFractal koch) {
         this.edge = edge;
         this.koch = koch;
-        this.manager = manager;
     }
 
     @Override
-    public Long call() throws Exception {
+    public List<Edge> call() throws Exception {
         if (edge == EdgeEnum.RIGHT) {
             this.koch.generateRightEdge();
         } else if (edge == EdgeEnum.BOTTOM) {
@@ -29,6 +30,6 @@ public class RunnableThread implements Callable<Long> {
         } else if (edge == EdgeEnum.LEFT) {
             this.koch.generateLeftEdge();
         }
-        return 1L;
+        return this.koch.getEdges();
     }
 }
