@@ -4,6 +4,7 @@ import fun3kochfractalfx.FUN3KochFractalFX;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 
+import java.io.ObjectStreamConstants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -16,7 +17,7 @@ enum EdgeEnum {
     LEFT
 }
 
-public class RunnableThread extends Task<ArrayList> implements Callable<ArrayList> {
+public class RunnableThread extends Task<ArrayList> implements Callable<ArrayList>, Observer {
 
     private EdgeEnum edge;
     private KochFractal koch;
@@ -33,19 +34,13 @@ public class RunnableThread extends Task<ArrayList> implements Callable<ArrayLis
 
     @Override
     public ArrayList call() throws Exception {
-        this.updateMessage("Nr edges: 0");
-        this.updateProgress(0, 1);
         if (edge == EdgeEnum.RIGHT) {
-            this.koch.generateRightEdge();
+            this.koch.generateRightEdge(this);
         } else if (edge == EdgeEnum.BOTTOM) {
-            this.koch.generateBottomEdge();
+            this.koch.generateBottomEdge(this);
         } else if (edge == EdgeEnum.LEFT) {
-            this.koch.generateLeftEdge();
+            this.koch.generateLeftEdge(this);
         }
-        Platform.runLater(() -> {
-            this.updateMessage("Nr edges: " + this.koch.getEdges().size());
-            this.updateProgress(1, 1);
-        });
         return koch.getEdges();
     }
 
@@ -54,4 +49,9 @@ public class RunnableThread extends Task<ArrayList> implements Callable<ArrayLis
     }
 
 
+    @Override
+    public void update(Observable o, Object arg) {
+            updateProgress(koch.getEdges().size(), maxEdges);
+            updateMessage(koch.getEdges().size() + "/" + maxEdges);
+    }
 }

@@ -10,13 +10,15 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  *
  * @author Peter Boots
  * Modified for FUN3 by Gertjan Schouten
  */
-public class KochFractal {
+public class KochFractal extends Observable {
 
     ArrayList<Edge> edges = new ArrayList<>();
     private int level = 1;      // The current level of the fractal
@@ -35,6 +37,8 @@ public class KochFractal {
                 Edge e = new Edge(ax, ay, bx, by, Color.hsb(hue*360.0, 1.0, 1.0));
                // manager.addEdge(e);
                 edges.add(e);
+                setChanged();
+                notifyObservers(e);
             } else {
                 double angle = Math.PI / 3.0 + Math.atan2(by - ay, bx - ax);
                 double distabdiv3 = Math.sqrt((bx - ax) * (bx - ax) + (by - ay) * (by - ay)) / 3;
@@ -50,19 +54,22 @@ public class KochFractal {
         }
     }
 
-    public void generateLeftEdge() {
+    public void generateLeftEdge(Task<ArrayList> task) {
+        this.addObserver((Observer) task);
         hue = 0f;
         cancelled = false;
         drawKochEdge(0.5, 0.0, (1 - Math.sqrt(3.0) / 2.0) / 2, 0.75, level);
     }
 
-    public void generateBottomEdge() {
+    public void generateBottomEdge(Task<ArrayList> task) {
+        this.addObserver((Observer) task);
         hue = 1f / 3f;
         cancelled = false;
         drawKochEdge((1 - Math.sqrt(3.0) / 2.0) / 2, 0.75, (1 + Math.sqrt(3.0) / 2.0) / 2, 0.75, level);
     }
 
-    public void generateRightEdge() {
+    public void generateRightEdge(Task<ArrayList> task) {
+        this.addObserver((Observer) task);
         hue = 2f / 3f;
         cancelled = false;
         drawKochEdge((1 + Math.sqrt(3.0) / 2.0) / 2, 0.75, 0.5, 0.0, level);
