@@ -4,6 +4,8 @@
  */
 package calculate;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -16,14 +18,14 @@ import java.util.List;
  */
 public class KochFractal {
 
-    private List<Edge> edges;
+    ArrayList<Edge> edges = new ArrayList<>();
     private int level = 1;      // The current level of the fractal
     private int nrOfEdges = 3;  // The number of edges in the current level of the fractal
     private float hue;          // Hue value of color for next edge
     private boolean cancelled;  // Flag to indicate that calculation has been cancelled
 
     public KochFractal() {
-        this.edges = new ArrayList<>();
+
     }
 
     private void drawKochEdge(double ax, double ay, double bx, double by, int n) {
@@ -48,19 +50,19 @@ public class KochFractal {
         }
     }
 
-    public synchronized void generateLeftEdge() {
+    public void generateLeftEdge() {
         hue = 0f;
         cancelled = false;
         drawKochEdge(0.5, 0.0, (1 - Math.sqrt(3.0) / 2.0) / 2, 0.75, level);
     }
 
-    public synchronized void generateBottomEdge() {
+    public void generateBottomEdge() {
         hue = 1f / 3f;
         cancelled = false;
         drawKochEdge((1 - Math.sqrt(3.0) / 2.0) / 2, 0.75, (1 + Math.sqrt(3.0) / 2.0) / 2, 0.75, level);
     }
 
-    public synchronized void generateRightEdge() {
+    public void generateRightEdge() {
         hue = 2f / 3f;
         cancelled = false;
         drawKochEdge((1 + Math.sqrt(3.0) / 2.0) / 2, 0.75, 0.5, 0.0, level);
@@ -83,7 +85,7 @@ public class KochFractal {
         return nrOfEdges;
     }
 
-    public List<Edge> getEdges() {
+    public ArrayList<Edge> getEdges() {
         return this.edges;
     }
 }

@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
@@ -48,7 +49,20 @@ public class FUN3KochFractalFX extends Application {
     private Label labelCalcText;
     private Label labelDraw;
     private Label labelDrawText;
-    
+
+    private Label leftProgressLabel;
+    private Label rightProgressLabel;
+    private Label bottomProgressLabel;
+
+    private Label leftEdgesLabel;
+    private Label rightEdgesLabel;
+    private Label bottomEdgesLabel;
+
+    private ProgressBar leftBar;
+    private ProgressBar rightBar;
+    private ProgressBar bottomBar;
+
+
     // Koch panel and its size
     private Canvas kochPanel;
     private final int kpWidth = 500;
@@ -58,6 +72,12 @@ public class FUN3KochFractalFX extends Application {
     private int counter = 0;
     private static final int THRESHOLD = 200_000;
     private final WritableImage image = new WritableImage(kpWidth, kpHeight);
+
+    @Override
+    public void stop() {
+        System.out.println("App stopped");
+    }
+
 
     @Override
     public void start(Stage primaryStage) {
@@ -98,7 +118,38 @@ public class FUN3KochFractalFX extends Application {
         // Label to present current level of Koch fractal
         labelLevel = new Label("Level: " + currentLevel);
         grid.add(labelLevel, 0, 6);
-        
+
+        leftBar = new ProgressBar();
+        leftBar.setProgress(0);
+        grid.add(leftBar, 1, 7);
+
+        rightBar = new ProgressBar();
+        rightBar.setProgress(0);
+        grid.add(rightBar, 1, 8);
+
+        bottomBar = new ProgressBar();
+        bottomBar.setProgress(0);
+        grid.add(bottomBar, 1, 9);
+
+        leftProgressLabel = new Label("Progress Left:");
+        grid.add(leftProgressLabel, 0, 7);
+
+        rightProgressLabel = new Label("Progress Right:");
+        grid.add(rightProgressLabel, 0, 8);
+
+        bottomProgressLabel = new Label("Progress Bottom:");
+        grid.add(bottomProgressLabel, 0, 9);
+
+        leftEdgesLabel = new Label("Nr Edges: ");
+        grid.add(leftEdgesLabel, 3, 7);
+
+        rightEdgesLabel = new Label("Nr Edges: ");
+        grid.add(rightEdgesLabel, 3, 8);
+
+        bottomEdgesLabel = new Label("Nr Edges: ");
+        grid.add(bottomEdgesLabel, 3, 9);
+
+
         // Button to increase level of Koch fractal
         Button buttonIncreaseLevel = new Button();
         buttonIncreaseLevel.setText("Increase Level");
@@ -131,6 +182,8 @@ public class FUN3KochFractalFX extends Application {
             }
         });
         grid.add(buttonFitFractal, 14, 6);
+
+
         
         // Add mouse clicked event to Koch panel
         kochPanel.addEventHandler(MouseEvent.MOUSE_CLICKED,
@@ -302,6 +355,30 @@ public class FUN3KochFractalFX extends Application {
                 e.X2 * zoom + zoomTranslateX,
                 e.Y2 * zoom + zoomTranslateY,
                 e.color);
+    }
+
+    public Label getLeftEdgesLabel() {
+        return leftEdgesLabel;
+    }
+
+    public Label getRightEdgesLabel() {
+        return rightEdgesLabel;
+    }
+
+    public Label getBottomEdgesLabel() {
+        return bottomEdgesLabel;
+    }
+
+    public ProgressBar getLeftBar() {
+        return leftBar;
+    }
+
+    public ProgressBar getRightBar() {
+        return rightBar;
+    }
+
+    public ProgressBar getBottomBar() {
+        return bottomBar;
     }
 
     /**

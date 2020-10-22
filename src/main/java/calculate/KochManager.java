@@ -4,11 +4,13 @@
  */
 package calculate;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
 import fun3kochfractalfx.FUN3KochFractalFX;
+import javafx.concurrent.Task;
 import timeutil.TimeStamp;
 
 /**
@@ -17,56 +19,70 @@ import timeutil.TimeStamp;
  * Modified for FUN3 by Gertjan Schouten
  */
 public class KochManager {
-    
-    private KochFractal koch;
+
     private ArrayList<Edge> edges;
     private FUN3KochFractalFX application;
     private TimeStamp tsCalc;
     private TimeStamp tsDraw;
+    List<RunnableThread> callables;
     
     public KochManager(FUN3KochFractalFX application) {
         this.edges = new ArrayList<Edge>();
-        this.koch = new KochFractal();
         this.application = application;
         this.tsCalc = new TimeStamp();
         this.tsDraw = new TimeStamp();
     }
     
     public void changeLevel(int nxt) {
+        if (callables != null) {
+            for (RunnableThread task: callables) {
+                task.cancelTask();
+            }
+        }
         edges.clear();
-        koch.setLevel(nxt);
         tsCalc.init();
         tsCalc.setBegin("Begin calculating");
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        List<RunnableThread> callables = new ArrayList<>();
+        callables = new ArrayList<>();
 
-        for (int i = 1; i < 4; i++) {
-            callables.add(new RunnableThread(EdgeEnum.values()[i - 1], koch));
-        }
+        RunnableThread left = new RunnableThread(EdgeEnum.LEFT, this, application, nxt);
+        RunnableThread bottom = new RunnableThread(EdgeEnum.BOTTOM, this, application, nxt);
+        RunnableThread right = new RunnableThread(EdgeEnum.RIGHT, this, application, nxt);
 
-        List<Future<List<Edge>>> resultList = null;
+        callables.add(left);
+        callables.add(bottom);
+        callables.add(right);
+
+        application.getLeftBar().progressProperty().unbind();
+        application.getBottomBar().progressProperty().unbind();
+        application.getRightBar().progressProperty().unbind();
+
+        application.getLeftBar().setProgress(0);
+        application.getBottomBar().setProgress(0);
+        application.getRightBar().setProgress(0);
+
+        application.getLeftBar().progressProperty().bind(left.progressProperty());
+        application.getBottomBar().progressProperty().bind(bottom.progressProperty());
+        application.getRightBar().progressProperty().bind(right.progressProperty());
+
+        application.getLeftEdgesLabel().textProperty().bind(left.messageProperty());
+        application.getBottomEdgesLabel().textProperty().bind(bottom.messageProperty());
+        application.getRightEdgesLabel().textProperty().bind(right.messageProperty());
+
+        List<Future<ArrayList>> results = null;
         try {
-            resultList = executorService.invokeAll(callables);
+            results = executorService.invokeAll(callables);
+            for (Future<ArrayList> future: results) {
+                this.edges.addAll(future.get());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             tsCalc.setEnd("End calculating");
-            application.setTextNrEdges("" + koch.getNrOfEdges());
             application.setTextCalc(tsCalc.toString());
-            try {
-                this.edges = (ArrayList<Edge>) resultList.get(0).get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
             application.requestDrawEdges();
             executorService.shutdown();
         }
-
-//        koch.generateLeftEdge();
-//        koch.generateBottomEdge();
-//        koch.generateRightEdge();
     }
     
     public void drawEdges() {
@@ -78,9 +94,11 @@ public class KochManager {
         }
         tsDraw.setEnd("End drawing");
         application.setTextDraw(tsDraw.toString());
+        application.setTextNrEdges(Integer.toString(edges.size()));
+        edges.clear();
     }
     
-    public void addEdge(Edge e) {
+    public synchronized void addEdge(Edge e) {
         edges.add(e);
     }
 }

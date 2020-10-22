@@ -9,3 +9,6 @@ C) Voor de task gebruik ik het type List<Edge> omdat ik deze later moet returnen
 
 D) Zodra de threads klaar zijn returnen zij de lists van edges die ik eerst opsla in een List<Future<List<Edge>>>. Vervolgens
 weet ik dat het berekenen klaar is en vervolgens kan ik de resultaten krijgen met de .get()
+
+E) Deze methode heeft geen verdere implementatie nodig als er niks hoeft te gebeuren wanneer de applicatie sluit. De stop 
+method wordt aangeroepen door de JavaFX thread en kun je gebruiken om bijvoorbeeld een notificatie te sturen.
